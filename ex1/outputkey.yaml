@@ -1,0 +1,10 @@
+apiVersion: v1
+data:
+  REDIS_OUTPUT_KEY: cesarmorais-proj3-output
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2023-12-09T17:16:06Z"
+  name: outputkey
+  namespace: cesarmorais
+  resourceVersion: "3692748"
+  uid: d8d3eaa1-3b16-47e3-a5be-1a5256fb75bd

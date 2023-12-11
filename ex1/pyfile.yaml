@@ -1,0 +1,22 @@
+apiVersion: v1
+data:
+  pyfile: "# from mockers import Mockers\n\ndef handler(input: dict, context: object)
+    -> dict:\n    # Calculating auxiliary percentages\n    byte_sum = input['net_io_counters_eth0-bytes_sent']
+    + input['net_io_counters_eth0-bytes_recv']\n    memory_caching_content = input['virtual_memory-cached']
+    + input['virtual_memory-buffers']\n    \n    # Calculating CPU moving mean\n    cpu_keys
+    = [key for key in input.keys() if key.startswith(\"cpu_percent-\")]\n    \n    #
+    Check if env's been initialized\n    context.env.update({f\"cpu_percent-{i}\":
+    context.env.get(f\"cpu_percent-{i}\", 0) for i in range(len(cpu_keys))})\n    \n
+    \   moving_mean_dict = {\n        f\"avg-cpu{i}-60sec\": context.env[f'cpu_percent-{i}']
+    + input[key] for i, key in enumerate(cpu_keys)    \n    }\n    context.env = moving_mean_dict\n
+    \   \n    return {\n        \"percent-outgoing-bytes\": input['net_io_counters_eth0-bytes_sent']/byte_sum,\n
+    \       \"percent-memory-caching\": memory_caching_content/input['virtual_memory-available'],\n
+    \       **moving_mean_dict\n    }\n     \n# print(handler(Mockers.get_input(),
+    Mockers.get_context()))"
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2023-12-09T17:16:06Z"
+  name: pyfile
+  namespace: cesarmorais
+  resourceVersion: "3692746"
+  uid: ca3ce55c-1e32-43e2-83d0-f7d34ad34ece
